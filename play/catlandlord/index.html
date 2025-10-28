@@ -5,32 +5,110 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Cat Landlord - Get the App</title>
 
-  <!-- iOS 스마트 배너 (선택 사항) -->
+  <!-- iOS 스마트 배너(선택) -->
   <meta name="apple-itunes-app" content="app-id=6748405496">
 
+  <!-- GA4 (Firebase 연동) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SSBGLX3XQ6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    // 페이지뷰 트래킹
+    gtag('config', 'G-SSBGLX3XQ6', {
+      'anonymize_ip': true
+    });
+  </script>
+
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Pretendard,sans-serif;margin:0;padding:24px;line-height:1.45}
-    .wrap{max-width:560px;margin:0 auto}
-    .btn{display:inline-block;padding:12px 16px;margin:6px 6px 0 0;border-radius:10px;border:1px solid #ddd;text-decoration:none}
-    .muted{color:#666;font-size:14px}
+    :root{
+      /* Daisy 테마 느낌의 브랜드 컬러 */
+      --brand:#D1E468;       /* 메인 */
+      --brand-ink:#182215;   /* 텍스트 */
+      --ink:#2b2b2b;         /* 본문 */
+      --muted:#6b7280;       /* 보조 텍스트 */
+      --border:#e5e7eb;      /* 경계선 */
+      --bg:#fffdf7;          /* 배경(미색) */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; background:var(--bg); color:var(--ink);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Pretendard,sans-serif;
+      line-height:1.45;
+      padding:24px;
+    }
+    .wrap{max-width:640px;margin:0 auto}
+    header{
+      display:flex; align-items:center; gap:12px; margin-bottom:18px;
+    }
+    .logo{
+      width:40px; height:40px; border-radius:10px;
+      background:var(--brand); display:flex; align-items:center; justify-content:center;
+      box-shadow:0 6px 16px rgba(0,0,0,.07), 0 2px 6px rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .logo img{width:100%;height:100%;object-fit:cover}
+    .brand{
+      font-weight:800; color:var(--brand-ink);
+      letter-spacing:.2px; font-size:20px;
+    }
+    .card{
+      border:1px solid var(--border); border-radius:14px; padding:20px;
+      background:#fff;
+      box-shadow:0 8px 28px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.04);
+    }
+    h1{font-size:22px;margin:0 0 10px 0}
+    p{margin:8px 0}
+    .muted{color:var(--muted); font-size:14px}
+    .buttons{display:flex;gap:10px; flex-wrap:wrap; margin-top:10px}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:12px 16px; border-radius:12px; border:1px solid var(--border);
+      text-decoration:none; color:var(--ink); background:#fff;
+      transition:transform .06s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 6px 18px rgba(0,0,0,.06) }
+    .btn:active{ transform:translateY(0) }
+    .btn--ios{ border-color:#e5e7eb }
+    .btn--and{ border-color:#e5e7eb }
+    .progress{
+      margin-top:14px; height:6px; background:#f1f5f9; border-radius:999px; overflow:hidden;
+    }
+    .bar{height:100%; width:0%; background:var(--brand); transition:width 1.2s ease}
+    footer{margin-top:16px;font-size:12px;color:var(--muted)}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>Cat Landlord</h1>
-    <p>잠시만요, 스토어로 이동 중이에요...</p>
-    <p class="muted">자동으로 이동하지 않으면 아래 버튼을 눌러주세요.</p>
-    <p>
-      <a id="btn-ios" class="btn" href="#">App Store에서 받기</a>
-      <a id="btn-android" class="btn" href="#">Google Play에서 받기</a>
-    </p>
+    <header>
+      <div class="logo">
+        <!-- 같은 폴더에 logo.png 올리면 자동 사용됨 -->
+        <img src="./logo.png" alt="" onerror="this.style.display='none'">
+      </div>
+      <div class="brand">Off Chance Studio</div>
+    </header>
+
+    <div class="card">
+      <h1>Cat Landlord로 이동 중...</h1>
+      <p class="muted">당신의 기기에 맞는 스토어로 자동 연결됩니다. 자동으로 이동하지 않으면 아래 버튼을 눌러주세요.</p>
+
+      <div class="buttons">
+        <a id="btn-ios" class="btn btn--ios" href="#"> App Store로 이동</a>
+        <a id="btn-android" class="btn btn--and" href="#">▶ Google Play로 이동</a>
+      </div>
+
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <footer>브라우저/인앱 환경에 따라 스토어 호출이 차단되면 버튼을 사용하세요.</footer>
+    </div>
   </div>
 
   <script>
     (function(){
+      // ★ 필요 시 여기만 수정
       const iosLink = "https://apps.apple.com/app/id6748405496";
       const androidLink = "https://play.google.com/store/apps/details?id=com.offchancestudio.catlandlord";
 
+      // 간단한 UA 판별 + iPadOS 보정
       const ua = navigator.userAgent || navigator.vendor || window.opera;
       const isIPad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       const isIPhone = /iPhone/.test(ua);
@@ -38,13 +116,42 @@
       const isIOS = isIPhone || isIPad || isIPod;
       const isAndroid = /Android/i.test(ua);
 
-      // 1초 지연 후 이동 (통계용)
-      if (isIOS) setTimeout(()=>location.replace(iosLink), 1200);
-      else if (isAndroid) setTimeout(()=>location.replace(androidLink), 1200);
+      // 버튼 수동 이동도 동일 링크로
+      const iosBtn = document.getElementById("btn-ios");
+      const andBtn = document.getElementById("btn-android");
+      iosBtn.href = iosLink;
+      andBtn.href = androidLink;
 
-      // 버튼도 수동 클릭용으로 링크 세팅
-      document.getElementById("btn-ios").href = iosLink;
-      document.getElementById("btn-android").href = androidLink;
+      // 진행바 애니메이션
+      requestAnimationFrame(()=> {
+        const bar = document.getElementById('bar');
+        bar.style.width = '100%';
+      });
+
+      // GA4 이벤트 로깅 (리디렉트 전에 히트 보장용)
+      function logAndGo(target, os){
+        try {
+          gtag('event', 'redirect', {
+            destination: os,
+            target_url: target,
+            user_agent: ua
+          });
+        } catch(e) {}
+        setTimeout(()=>location.replace(target), 1200); // 1.2초 지연(히트 수집 여유)
+      }
+
+      // 자동 분기
+      if (isIOS) {
+        logAndGo(iosLink, 'ios');
+      } else if (isAndroid) {
+        logAndGo(androidLink, 'android');
+      } else {
+        // 데스크톱/기타: 수동 버튼만 노출
+      }
+
+      // 수동 클릭 시에도 이벤트 기록
+      iosBtn.addEventListener('click', e => { e.preventDefault(); logAndGo(iosLink, 'ios_click'); });
+      andBtn.addEventListener('click', e => { e.preventDefault(); logAndGo(androidLink, 'android_click'); });
     })();
   </script>
 </body>
